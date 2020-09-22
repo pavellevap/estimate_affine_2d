@@ -1,7 +1,5 @@
 import numpy as np
 from affine_estimation import estimate_affine, estimate_affine_ransac
-from skimage.measure import ransac
-from skimage.transform import AffineTransform
 
 
 noise_power = 0.05
@@ -28,7 +26,6 @@ outlier_labels = np.random.randint(0, labels_count, outliers_count).astype(np.in
 labels_src = np.random.randint(0, labels_count, points_count).astype(np.int32)
 labels_dst = np.concatenate([labels_src[:inliers_count], outlier_labels])
 
-
 matches = [[], []]
 for i in range(len(labels_src)):
     label = labels_src[i]
@@ -36,7 +33,6 @@ for i in range(len(labels_src)):
     for p2 in points_dst[labels_dst == label]:
         matches[0].append(p1)
         matches[1].append(p2)
-
 matches = (np.array(matches[0]), np.array(matches[1]))
 
 def reprojection_error(model_pred):
@@ -49,7 +45,6 @@ print(f'True model:\n{model_true}')
 
 model_pred = estimate_affine(matches[0], matches[1])
 print(f'Least squares reprojection error: {reprojection_error(model_pred)}')
-
 print(f'Least squares model:\n{model_pred}')
 
 model_pred, inliers = estimate_affine_ransac(points_src, labels_src, points_dst, labels_dst, max_iter=10000, 
